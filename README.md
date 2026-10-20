@@ -27,7 +27,6 @@ Applying through several platforms (LinkedIn, JobStreet, Indeed, company sites) 
 | **The filter that decides what is due** | ![Filter logic](docs/screenshots/filter-logic.png) |
 | **The Tracker sheet** | ![Tracker sheet](docs/screenshots/tracker-sheet.png) |
 | **The reminder email** | ![Reminder email](docs/screenshots/reminder-email.png) |
-| **The reminder email** | ![Reminder email](docs/screenshots/reminder-email.png) |
 | **How dates arrive from the sheet** | ![Tracker rows as read by n8n](docs/screenshots/read-tracker-output.png) |
 
 ## How it works
