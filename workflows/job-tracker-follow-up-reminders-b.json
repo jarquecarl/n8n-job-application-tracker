@@ -1,0 +1,351 @@
+{
+  "name": "Job Tracker - Follow-up Reminders (B)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "bb6c2227-9cfc-4dde-b395-fdbea1939381",
+      "name": "Every day 9:00 AM"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Job Application Tracker",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 805376209,
+          "mode": "list",
+          "cachedResultName": "Tracker",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit#gid=805376209"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "7f4fd0d7-c56c-4eb5-b8fa-12b935b5d30b",
+      "name": "Read Tracker rows",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ptbXvSJHu2jSIBFw",
+          "name": "Google Sheets - Job Tracker"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "3d50f1a7-ceaa-4132-80d4-e1bd52674f7a",
+              "leftValue": "={{ $json.Status }}",
+              "rightValue": "Applied",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "4ce409cc-e885-4df3-aaa5-7d9568599dc4",
+              "leftValue": "={{ $json[\"Reminder Sent\"] }}",
+              "rightValue": "No",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "65d8a1a0-8910-466b-a1f3-47138bf8b975",
+              "leftValue": "={{ DateTime.fromFormat($json[\"Follow-up Due\"], \"d/M/yyyy\") <= $today }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "d4890f9a-a880-42c2-a0d2-8d0988398bcc",
+      "name": "Due and not reminded"
+    },
+    {
+      "parameters": {
+        "sendTo": "you@example.com",
+        "subject": "=Follow up: {{ $json.Role }} at {{ $json.Company }}",
+        "message": "=<p>It has been 2 weeks since you applied. Time to follow up.</p>\n<p>\n<b>Company:</b> {{ $json.Company }}<br>\n<b>Role:</b> {{ $json.Role }}<br>\n<b>Platform:</b> {{ $json.Platform }}<br>\n<b>Applied on:</b> {{ $json[\"Date Applied\"] }}\n</p>\n<p>After you follow up, update the Status column in your Tracker sheet (Interview, Offer, Rejected or Ghosted) so this reminder stops.</p>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "315eef35-f9b0-4b3b-af6a-59c477878081",
+      "name": "Email reminder",
+      "webhookId": "482e54a5-2bc7-49bf-ba67-54370c707cf5",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "tym8eiKs3HEGmLja",
+          "name": "Gmail - Job Tracker"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Job Application Tracker",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 805376209,
+          "mode": "list",
+          "cachedResultName": "Tracker",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit#gid=805376209"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID": "={{ $('Due and not reminded').item.json.ID }}",
+            "Reminder Sent": "Yes"
+          },
+          "matchingColumns": [
+            "ID"
+          ],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Role",
+              "displayName": "Role",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Date Applied",
+              "displayName": "Date Applied",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Platform",
+              "displayName": "Platform",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Salary Range",
+              "displayName": "Salary Range",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Follow-up Due",
+              "displayName": "Follow-up Due",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Reminder Sent",
+              "displayName": "Reminder Sent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        832,
+        0
+      ],
+      "id": "0270b941-45cf-4145-ac68-b09f65e4cb5c",
+      "name": "Mark reminder sent",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ptbXvSJHu2jSIBFw",
+          "name": "Google Sheets - Job Tracker"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Every day 9:00 AM": {
+      "main": [
+        [
+          {
+            "node": "Read Tracker rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Tracker rows": {
+      "main": [
+        [
+          {
+            "node": "Due and not reminded",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Due and not reminded": {
+      "main": [
+        [
+          {
+            "node": "Email reminder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email reminder": {
+      "main": [
+        [
+          {
+            "node": "Mark reminder sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "timezone": "Asia/Manila",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "75f4863c-aa91-4972-a5ce-aaa8cbf94ca4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "22ff7b273f631db99725d6ded9438ea1b17f7571e1404b41ffcdd543cff77a0a"
+  },
+  "id": "m33dnMNOtuHIlwFq",
+  "tags": []
+}

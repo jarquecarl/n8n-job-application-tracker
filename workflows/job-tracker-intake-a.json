@@ -1,0 +1,282 @@
+{
+  "name": "Job Tracker - Intake (A)",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Job Application Tracker",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 466608771,
+          "mode": "list",
+          "cachedResultName": "Form responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit#gid=466608771"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "216a0bd1-2b5f-4f38-837e-7d6f0e558ff5",
+      "name": "New form response",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "H2KQIfkUJXDlkZ0o",
+          "name": "Google Sheets Trigger - Job Tracker"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8a30f889-7aa9-4f78-9808-0fd9194d1586",
+              "name": "ID",
+              "value": "={{ $json.Timestamp }}",
+              "type": "string"
+            },
+            {
+              "id": "2b2c43d8-3bf2-4443-b25a-40aaf9c6b659",
+              "name": "Company",
+              "value": "={{ $json.Company }}",
+              "type": "string"
+            },
+            {
+              "id": "d51d7130-c0fb-4397-bb1c-d211f12efebe",
+              "name": "Role",
+              "value": "={{ $json.Role }}",
+              "type": "string"
+            },
+            {
+              "id": "fb427334-b3ae-45e2-83fa-b8e1565ec1ed",
+              "name": "Date Applied",
+              "value": "={{ $json[\"Date Applied\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "a9058d19-dbed-41a6-90bf-042366bd730b",
+              "name": "Platform",
+              "value": "={{ $json.Platform }}",
+              "type": "string"
+            },
+            {
+              "id": "67a0d4a6-241c-44c6-89d6-369f98f4b9aa",
+              "name": "Salary Range",
+              "value": "={{ $json[\"Salary Range\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "682fed04-209e-4e97-bf6a-a5356fa6797a",
+              "name": "Status",
+              "value": "={{ $json.Status }}",
+              "type": "string"
+            },
+            {
+              "id": "f765a216-990c-4b92-b967-0fa85a1f3d8c",
+              "name": "Follow-up Due",
+              "value": "={{ DateTime.fromFormat($json[\"Date Applied\"], \"d/M/yyyy\").plus({days: 14}).toFormat(\"d/M/yyyy\") }}",
+              "type": "string"
+            },
+            {
+              "id": "d89c4d3d-1aab-40a7-8bdf-7be81c628fcd",
+              "name": "Reminder Sent",
+              "value": "No",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "fbc2efcd-5c1d-4374-9054-c2812f66cb37",
+      "name": "Add follow-up date"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Job Application Tracker",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 805376209,
+          "mode": "list",
+          "cachedResultName": "Tracker",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit#gid=805376209"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "ID"
+          ],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Role",
+              "displayName": "Role",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date Applied",
+              "displayName": "Date Applied",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Platform",
+              "displayName": "Platform",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Salary Range",
+              "displayName": "Salary Range",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Follow-up Due",
+              "displayName": "Follow-up Due",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Reminder Sent",
+              "displayName": "Reminder Sent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        416,
+        0
+      ],
+      "id": "c0127e49-3bb1-4933-ba9f-ec55de4039f7",
+      "name": "Upsert into Tracker",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ptbXvSJHu2jSIBFw",
+          "name": "Google Sheets - Job Tracker"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "New form response": {
+      "main": [
+        [
+          {
+            "node": "Add follow-up date",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add follow-up date": {
+      "main": [
+        [
+          {
+            "node": "Upsert into Tracker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "e87a5b4a-3d6c-4f53-91c5-83e9a9e92b93",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "22ff7b273f631db99725d6ded9438ea1b17f7571e1404b41ffcdd543cff77a0a"
+  },
+  "id": "CSuQKU9IJQtJcxj5",
+  "tags": []
+}
