@@ -28,6 +28,7 @@ Applying through several platforms (LinkedIn, JobStreet, Indeed, company sites) 
 | **The Tracker sheet** | ![Tracker sheet](docs/screenshots/tracker-sheet.png) |
 | **The reminder email** | ![Reminder email](docs/screenshots/reminder-email.png) |
 | **How dates arrive from the sheet** | ![Tracker rows as read by n8n](docs/screenshots/read-tracker-output.png) |
+| **First scheduled run** | ![Scheduled run](docs/screenshots/executions-b-scheduled.png) |
 
 ## How it works
 
@@ -107,6 +108,7 @@ Workflow B:  Every day 9:00 AM → Read Tracker rows → Due and not reminded
 - A row that was due and not yet reminded sent exactly one email and was marked `Yes`.
 - Running the workflow again sent nothing.
 - A row that was not yet due was correctly skipped.
+- The daily 9:00 AM schedule ran unattended on 21 Oct 2026 and correctly sent nothing, because no application was due yet.
 
 ## Limitations and next steps
 
