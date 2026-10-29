@@ -4,6 +4,8 @@ A small personal automation that logs every job application I submit and emails 
 
 **Built with:** n8n (self-hosted), Google Forms, Google Sheets, Gmail
 
+**How I built it:** with Claude (AI) as my guide. I followed its step-by-step guidance, using my own accounts and resources (my Google account, my own n8n instance and my own OAuth app). I tested every step myself, fixed the problems listed below, and can explain how each part works.
+
 ---
 
 ## The problem
@@ -78,6 +80,8 @@ Workflow B:  Every day 9:00 AM → Read Tracker rows → Due and not reminded
 
 ## Design decisions
 
+These were worked out with Claude's guidance while building, and I tested and understood each one:
+
 - **Two workflows instead of one long "wait 14 days".** A single workflow that waits two weeks cannot re-check the sheet when it wakes up, and it breaks if the instance restarts mid-wait. A daily scan of the sheet handles "has the status changed since?" naturally.
 - **The sheet holds all the state.** There is no hidden state inside n8n. The `Status` and `Reminder Sent` columns are what the system reads, and I can fix or override any row by hand.
 - **Polling trigger instead of a webhook.** n8n has no native Google Forms trigger. Watching the form's response sheet works on a local instance with no public URL.
@@ -89,6 +93,8 @@ Workflow B:  Every day 9:00 AM → Read Tracker rows → Due and not reminded
 - **OAuth consent screen published.** In "Testing" status, Google expires sign-ins after about 7 days, which would silently stop the automation.
 
 ## Problems I hit, and how I fixed them
+
+I hit these while building and testing the workflows, and worked through the fixes with Claude's guidance:
 
 | Problem | Cause | Fix |
 |---|---|---|
